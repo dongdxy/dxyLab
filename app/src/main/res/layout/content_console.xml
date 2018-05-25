@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:context=".ConsoleActivity"
+    tools:showIn="@layout/activity_console">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+    <TextView
+        android:id="@+id/console_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent"
+        android:layout_margin="20dp" />
 </android.support.constraint.ConstraintLayout>

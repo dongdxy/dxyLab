@@ -1,20 +1,35 @@
 package com.dongxinyu.dxylab;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static List<Class<?>> entries = new ArrayList<>();
+
+    static {
+        entries.add(ConsoleActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +55,58 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        initViews();
+    }
+
+    private void initViews() {
+        RecyclerView recyclerView = findViewById(R.id.list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new SimpleAdapter());
+    }
+
+    private class SimpleAdapter extends RecyclerView.Adapter<SimpleAdapter.SimpleItemHolder> {
+
+        public SimpleAdapter() {
+            super();
+        }
+
+        @Override
+        public int getItemCount() {
+            return entries.size();
+        }
+
+        @Override
+        public void onBindViewHolder(SimpleItemHolder holder, final int position) {
+            holder.textView.setText(entries.get(position).getSimpleName());
+            holder.textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(MainActivity.this, entries.get(position));
+                    startActivity(i);
+                }
+            });
+        }
+
+        @Override
+        public SimpleItemHolder onCreateViewHolder(ViewGroup arg0, int arg1) {
+            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.list_item, arg0, false);
+            SimpleItemHolder holder = new SimpleItemHolder(view);
+            return holder;
+        }
+
+        class SimpleItemHolder extends RecyclerView.ViewHolder {
+
+            private TextView textView;
+
+            public SimpleItemHolder(View view) {
+                super(view);
+                textView = view.findViewById(R.id.text);
+            }
+
+        }
+
+
     }
 
     @Override
