@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dongxinyu.dxylab">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".MyApp"
         android:allowBackup="true"
@@ -22,7 +25,15 @@
         </activity>
         <activity
             android:name=".ConsoleActivity"
-            android:label="@string/title_activity_console"></activity>
+            android:label="@string/title_activity_console" />
+        <activity
+            android:name=".PhotoMarkActivity"
+            android:label="@string/title_activity_photo_mark"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PhotoPickActivity"
+            android:label="@string/title_activity_photo_pick"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

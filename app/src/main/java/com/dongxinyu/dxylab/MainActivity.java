@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity
 
     static {
         entries.add(ConsoleActivity.class);
+        entries.add(PhotoMarkActivity.class);
     }
 
     @Override
