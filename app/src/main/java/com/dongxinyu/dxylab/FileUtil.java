@@ -41,7 +41,7 @@ public class FileUtil {
     /**
      * 图片目录
      */
-    public final String IMAGE_PATH = "/sdcard/DCIM/Camera";
+    public final String IMAGE_PATH = "/sdcard/DCIM/Camera/";
 
     /**
      * 判断是否存在存储空间	 *
