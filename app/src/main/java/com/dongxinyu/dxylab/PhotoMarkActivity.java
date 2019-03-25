@@ -11,9 +11,9 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
@@ -125,7 +125,7 @@ public class PhotoMarkActivity extends AppCompatActivity {
                                 bm = FileUtil.getInstance().getImage(picPath); //获取限定宽高的bitmap，不限定则容易占用内存过大及OOM
                                 if (bm == null) {
                                 } else {
-                                    SimpleDateFormat sdf = new SimpleDateFormat("MMdd_HHmmss");
+                                    SimpleDateFormat sdf = new SimpleDateFormat("MMdd_HH:mm:ss:SS");
                                     String currentDateandTime = sdf.format(new Date());
                                     if (addWatermarkBitmap(bm, currentDateandTime, bm.getWidth(), bm.getHeight())) {
                                     }
@@ -166,7 +166,7 @@ public class PhotoMarkActivity extends AppCompatActivity {
         photoPaint.setFilterBitmap(true);//过滤一些
 
         Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);//设置画笔
-        textPaint.setTextSize(destWidth / 22);//字体大小
+        textPaint.setTextSize(destWidth / 10);//字体大小
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTypeface(Typeface.DEFAULT_BOLD);//采用默认的宽度
         textPaint.setAntiAlias(true);  //抗锯齿

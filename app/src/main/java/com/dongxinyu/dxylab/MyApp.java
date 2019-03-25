@@ -1,6 +1,7 @@
 package com.dongxinyu.dxylab;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
@@ -19,5 +20,6 @@ public class MyApp extends Application {
                                                             .tag("logger")   //自定义TAG全部标签，默认PRETTY_LOGGER
                                                             .build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
+        Log.d("xxx", "appOncreate");
     }
 }

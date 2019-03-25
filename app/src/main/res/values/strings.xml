@@ -9,4 +9,5 @@
     <string name="title_activity_console">ConsoleActivity</string>
     <string name="title_activity_photo_mark">PhotoMarkActivity</string>
     <string name="title_activity_photo_pick">PhotoPickActivity</string>
+    <string name="title_activity_fire_intent">FireIntentActivity</string>
 </resources>

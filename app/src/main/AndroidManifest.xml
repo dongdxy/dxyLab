@@ -33,6 +33,14 @@
         <activity
             android:name=".PhotoPickActivity"
             android:label="@string/title_activity_photo_pick"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AlarmActivity"
+            android:label="@string/title_activity_photo_pick"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FireIntentActivity"
+            android:label="@string/title_activity_fire_intent"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
