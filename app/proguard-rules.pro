@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#sdkcv 混淆配置
+-keep class com.bytedance.cvlibrary.**{ *; }
+-keep class cn.everphoto.network.data.**{ *; }
+-keep class cn.everphoto.network.response.**{ *; }
+-keep class org.threeten.bp.zone.**{ *; }
+-keep class org.threeten.bp.**{ *; }

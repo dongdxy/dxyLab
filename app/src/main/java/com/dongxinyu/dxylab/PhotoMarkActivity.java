@@ -175,7 +175,7 @@ public class PhotoMarkActivity extends AppCompatActivity {
         textPaint.setColor(Color.WHITE);//采用的颜色
 //        textPaint.setShadowLayer(3f, 1, 1,getResources().getColor(android.R.color.white));//影音的设置
         canvas.drawText(str, destWidth / 2, destHeight / 2, textPaint);//绘制上去字，开始未知x,y采用那只笔绘制
-        canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.save();
         canvas.restore();
         return FileUtil.getInstance().saveMyBitmap(bitmap, String.valueOf(new Date().getTime())); //保存至文件
 //        return true;

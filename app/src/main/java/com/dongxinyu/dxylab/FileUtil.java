@@ -218,7 +218,7 @@ public class FileUtil {
                 canvas.drawText(s, destWidth / 2, destHeight - 45 * i, textPaint);//绘制上去字，开始未知x,y采用那只笔绘制
             }
         }
-        canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.save();
         canvas.restore();
         bitmap.recycle();
         return saveMyBitmap(icon, name); //保存至文件

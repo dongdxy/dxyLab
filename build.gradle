@@ -22,6 +22,9 @@ allprojects {
         maven {
             url 'https://maven.byted.org/repository/photo_android/'
         }
+        maven {
+            url 'https://maven.byted.org/repository/android_public/'
+        }
     }
 }
 
