@@ -11,15 +11,16 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,7 +51,7 @@ public class PhotoMarkActivity extends AppCompatActivity {
         });
     }
 
-    private void checkpermission(){
+    private void checkpermission() {
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
                                               Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -115,49 +116,51 @@ public class PhotoMarkActivity extends AppCompatActivity {
                 Editable text = editText.getText();
                 int count = Integer.parseInt(text.toString());
 
-                for (int i = 0; i < count; i++) {
-                    final int finalI = i;
-                    new AsyncTask<Void, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(Void... voids) {
-                            Bitmap bm = null;
-                            try {
-                                bm = FileUtil.getInstance().getImage(picPath); //获取限定宽高的bitmap，不限定则容易占用内存过大及OOM
-                                if (bm == null) {
-                                } else {
-                                    SimpleDateFormat sdf = new SimpleDateFormat("MMdd_HH:mm:ss:SS");
+
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        Bitmap bm = null;
+                        try {
+                            bm = FileUtil.getInstance().getImage(picPath); //获取限定宽高的bitmap，不限定则容易占用内存过大及OOM
+                            if (bm == null) {
+                            } else {
+                                for (int i = 0; i < count; i++) {
+                                    Bitmap tmp = Bitmap.createScaledBitmap(bm, bm.getWidth() / 2, bm.getHeight() / 2, false);
+                                    SimpleDateFormat sdf = new SimpleDateFormat("MMdd");
                                     String currentDateandTime = sdf.format(new Date());
-                                    if (addWatermarkBitmap(bm, currentDateandTime, bm.getWidth(), bm.getHeight())) {
-                                    }
+                                    String label = currentDateandTime + "_" + i;
+                                    boolean result = addWatermarkBitmap(tmp, label, tmp.getWidth(), tmp.getHeight());
+                                    Log.v("addWatermarkBitmap", "no." + i + " result:" + result);
                                 }
-                            } catch (OutOfMemoryError e) {
-                                e.printStackTrace();
-                                if (bm != null) {
-                                    bm.recycle();
-                                }
-                                System.gc();
                             }
-                            return null;
+                        } catch (OutOfMemoryError e) {
+                            e.printStackTrace();
+                            if (bm != null) {
+                                bm.recycle();
+                            }
+                            System.gc();
                         }
+                        return null;
+                    }
 
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            Toast.makeText(PhotoMarkActivity.this, "水印生成成功，文件已保存在 " + FileUtil.getInstance().IMAGE_PATH, Toast.LENGTH_SHORT).show();
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        Toast.makeText(PhotoMarkActivity.this, "水印生成成功，文件已保存在 " + FileUtil.getInstance().IMAGE_PATH, Toast.LENGTH_SHORT).show();
 
-                        }
-                    }.execute();
-                }
+                    }
+                }.execute();
 
 
             }
         }
+
     }
 
 
     private boolean addWatermarkBitmap(Bitmap bitmap, String str, int w, int h) {
         int destWidth = w;   //此处的bitmap已经限定好宽高
         int destHeight = h;
-        Log.v("tag", "width = " + destWidth + " height = " + destHeight);
 
         Canvas canvas = new Canvas(bitmap);//初始化画布绘制的图像到icon上
 
@@ -166,10 +169,9 @@ public class PhotoMarkActivity extends AppCompatActivity {
         photoPaint.setFilterBitmap(true);//过滤一些
 
         Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DEV_KERN_TEXT_FLAG);//设置画笔
-        textPaint.setTextSize(destWidth / 10);//字体大小
+        textPaint.setTextSize(destWidth / 8);//字体大小
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTypeface(Typeface.DEFAULT_BOLD);//采用默认的宽度
-        textPaint.setAntiAlias(true);  //抗锯齿
         textPaint.setStrokeWidth(10);
         textPaint.setAlpha(15);
         textPaint.setColor(Color.WHITE);//采用的颜色
@@ -177,7 +179,7 @@ public class PhotoMarkActivity extends AppCompatActivity {
         canvas.drawText(str, destWidth / 2, destHeight / 2, textPaint);//绘制上去字，开始未知x,y采用那只笔绘制
         canvas.save();
         canvas.restore();
-        return FileUtil.getInstance().saveMyBitmap(bitmap, String.valueOf(new Date().getTime())); //保存至文件
+        return FileUtil.getInstance().saveMyBitmap(bitmap, str); //保存至文件
 //        return true;
     }
 }

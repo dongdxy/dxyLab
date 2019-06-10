@@ -232,7 +232,7 @@ public class FileUtil {
         FileOutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(new File(getImageFile(name)));
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
