@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.zen.lib.analysis'
 
 android {
     signingConfigs {
@@ -33,6 +34,9 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+    packagingOptions {
+        exclude 'lib/armeabi-v7a/libeverphoto.so'
+    }
 }
 
 dependencies {
@@ -47,5 +51,15 @@ dependencies {
     implementation 'com.orhanobut:logger:2.1.1'
 
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
-    implementation "cn.everphoto.sdk:cv:0.1.25"
+    implementation "cn.everphoto.sdk:cv:1.5.2"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.11"
+}
+
+libReport {
+    output = [
+            "txt", "html" // default
+    ]
+    ignore = [
+            "com.android.support:support-v4"
+    ]
 }

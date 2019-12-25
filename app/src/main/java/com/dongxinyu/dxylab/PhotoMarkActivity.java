@@ -126,7 +126,7 @@ public class PhotoMarkActivity extends AppCompatActivity {
                             if (bm == null) {
                             } else {
                                 for (int i = 0; i < count; i++) {
-                                    Bitmap tmp = Bitmap.createScaledBitmap(bm, bm.getWidth() / 2, bm.getHeight() / 2, false);
+                                    Bitmap tmp = Bitmap.createScaledBitmap(bm, bm.getWidth() / 4, bm.getHeight() / 4, false);
                                     SimpleDateFormat sdf = new SimpleDateFormat("MMdd");
                                     String currentDateandTime = sdf.format(new Date());
                                     String label = currentDateandTime + "_" + i;

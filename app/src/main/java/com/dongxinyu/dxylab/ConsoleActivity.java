@@ -14,12 +14,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import cn.everphoto.sdkcv.EverphotoClient;
 import cn.everphoto.sdkcv.EverphotoClientConfig;
 import cn.everphoto.sdkcv.moment.EpMoment;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -59,11 +62,205 @@ public class ConsoleActivity extends AppCompatActivity {
 //                         }
 //                     });
 
-        testep();
+//        testep();
+//        testTreeSet();
+//        testZigzag();
+//        testMerge();
+//        testFlowable();
+        testMerge();
+    }
+
+    private void testFlowable() {
+        List<List<String>> lists = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            List<String> list = new ArrayList<>();
+            list.add("test" + i + "-1");
+            list.add("test" + i + "-2");
+            list.add("test" + i + "-3");
+            lists.add(list);
+        }
+
+        Observable.just(0)
+                .throttleLatest(3, TimeUnit.SECONDS, Schedulers.io())
+                .toFlowable(BackpressureStrategy.LATEST)
+                .map(integer -> lists)
+                .concatMapIterable(lists1 -> lists1)
+                .doOnNext(strings -> Log.d("xxx", "doonNext:" + strings))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+
+    }
+
+    private void testZigzag() {
+        int[] test = new int[]{5, 6, 7, 1, 2, 3, 4};
+        Log.d("xxx", "orig : " + Arrays.toString(test));
+        int pre = test[0];
+        int lenth = test.length;
+        boolean bigger = true;
+        for (int i = 1; i < lenth; i++) {
+            if (test[i] - pre < 0 == bigger) {
+                swap(test, i - 1, i);
+            }
+            bigger = !bigger;
+            pre = test[i];
+        }
+        Log.d("xxx", "zig zag : " + Arrays.toString(test));
+    }
+
+    private void swap(int[] test, int i, int j) {
+        int tmp = test[i];
+        test[i] = test[j];
+        test[j] = tmp;
+    }
+
+    private void testTreeSet() {
+        TreeSet<TestData> set = new TreeSet<>();
+
+        TestData tx;
+
+        TestData t1 = new TestData(1, "aaaaa");
+        TestData t2 = new TestData(1, "bbbb");
+        TestData t3 = new TestData(1, "cccc");
+
+        tx = t3;
+
+        set.add(t1);
+        set.add(t2);
+        set.add(t3);
+
+        TestData tN = new TestData(1, "dddd");
+        set.add(tN);
+        tN = new TestData(1, "eeeee");
+        set.add(tN);
+        tN = new TestData(1, "ffffff");
+        set.add(tN);
+        tN = new TestData(2, "ggggg");
+        set.add(tN);
+        tN = new TestData(2, "hhhhhh");
+        set.add(tN);
+        tN = new TestData(2, "iiiii");
+        set.add(tN);
+        tN = new TestData(2, "jjjjjjj");
+        set.add(tN);
+
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for (int i = 0; i < 100000; i++) {
+            Random random = new Random();
+            StringBuffer sb = new StringBuffer();
+            for (int j = 0; j < 100; j++) {
+                int number = random.nextInt(62);
+                sb.append(str.charAt(number));
+            }
+            tN = new TestData(1, sb.toString());
+            set.add(tN);
+            if (i == 500) {
+                tx = tN;
+            }
+        }
+
+
+        Log.d("xxx", "treeSet.size:" + set.size());
+        Log.d("xxx", "contains:" + set.contains(tx));
+
+        Log.d("xxx", "tx.hash:" + tx.hashCode());
+        Log.d("xxx", "tx.hash.max-:" + (Integer.MAX_VALUE - tx.hashCode()));
+
+        for (TestData testData : set) {
+            if (!set.contains(testData)) {
+                Log.d("xxx", "not contains:" + testData);
+                Log.d("xxx", "not contains.hash:" + testData.hashCode());
+                Log.d("xxx", "not contains.hash.max-:" + (Integer.MAX_VALUE - testData.hashCode()));
+            }
+        }
+    }
+
+    private static class TestData implements Comparable<TestData> {
+        String str;
+        long value;
+
+        public TestData(long value, String str) {
+            this.str = str;
+            this.value = value;
+        }
+
+
+        @Override
+        public int compareTo(TestData o) {
+            if (o == null) {
+                return -1;
+            }
+            long otherTime = o.value;
+            long thisTime = this.value;
+            if (thisTime > otherTime) {
+                return -1;
+            } else if (thisTime < otherTime) {
+                return 1;
+            }
+
+            return this.hashCode() - o.hashCode();
+
+        }
+
+        @Override
+        public int hashCode() {
+            return this.str.hashCode();
+        }
     }
 
     private void printStaticThread() {
         TestCaseStaticThread.testThread();
+    }
+
+    private void testMerge() {
+        int[][] input = {
+                {1, 3, 5, 7, 9, 10},
+                {1, 2, 3, 5, 6, 10},
+                {2, 4, 5, 6, 8, 10, 12, 14}
+        };
+
+        mergeList(input);
+    }
+
+    private void mergeList(int[][] input) {
+        int[] pick = input[0];
+        int[] p = new int[input.length];
+
+        for (int i = 0; i < pick.length; i++) {
+            int c = pick[i];
+            boolean noFound = false;
+            for (int j = 1; j < input.length; j++) {
+                int[] line = input[j];
+
+                while (p[j] < line.length) {
+                    if (line[p[j]] < c) {
+                        p[j]++;
+                    } else if (line[p[j]] == c) {
+                        break;
+                    } else {
+                        noFound = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!noFound) {
+                Log.d("xxx", "find common " + c);
+            }
+        }
+
+    }
+
+    private int findNext(int curent, int i, int[][] input, int[] p) {
+        int v[] = input[i];
+        while (p[i] < v.length) {
+            if (v[p[i]] == curent) {
+                return curent;
+            } else if (v[p[i]] > curent) {
+                return v[p[i]];
+            }
+            p[i]++;
+        }
+        return -1;
     }
 
 
@@ -107,7 +304,8 @@ public class ConsoleActivity extends AppCompatActivity {
 
     private void testep() {
         EverphotoClientConfig config = new EverphotoClientConfig.Builder().build();
-        EverphotoClient everphotoClient = EverphotoClient.create(this, config);
+        EverphotoClient.init(this, config);
+        EverphotoClient everphotoClient = EverphotoClient.getInstance();
         everphotoClient.startRecognition();
         everphotoClient.momentApi().refreshMoments();
         everphotoClient.momentApi().getMoments().subscribe(new Observer<List<EpMoment>>() {
@@ -153,11 +351,11 @@ public class ConsoleActivity extends AppCompatActivity {
 //            }
 //        });
         Observable.just(0)
-                  .delay(10, TimeUnit.SECONDS)
-                  .doOnSubscribe(disposable -> everphotoClient.assetStoreApi().preLoad())
-                  .subscribeOn(Schedulers.io())
-                  .subscribe(entry -> Log.d("xxx", "assetEntry get: " +
-                          everphotoClient.assetStoreApi().getAssetEntry("/storage/emulated/0/DCIM/Camera/IMG_20190203_152228.jpg")));
+                .delay(10, TimeUnit.SECONDS)
+                .doOnSubscribe(disposable -> everphotoClient.assetStoreApi().preLoad())
+                .subscribeOn(Schedulers.io())
+                .subscribe(entry -> Log.d("xxx", "assetEntry get: " +
+                        everphotoClient.assetStoreApi().getAssetEntry("/storage/emulated/0/DCIM/Camera/IMG_20190203_152228.jpg")));
 
     }
 
@@ -239,5 +437,10 @@ public class ConsoleActivity extends AppCompatActivity {
             int integer = synchronizedMap.get(i);
         }
         DebugUtil.printEnd("synchronizedMap.get");
+    }
+
+    private void test1(){
+        final int n=3;
+
     }
 }

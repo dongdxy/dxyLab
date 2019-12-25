@@ -26,3 +26,6 @@
 -keep class cn.everphoto.network.response.**{ *; }
 -keep class org.threeten.bp.zone.**{ *; }
 -keep class org.threeten.bp.**{ *; }
+
+-dontwarn cn.everphoto.utils.monitor.**
+-dontwarn okio.**
